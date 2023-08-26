@@ -1,6 +1,10 @@
 # NpcSpawnCore
-Functions:
-  npcSpawn(S,V)
-  npcSpawn(S,V,A)
-ConVars:
-  sbox_E2_maxNpcsPerSecond
+Functions:<br>
+<ul>
+	<li>npcSpawn(S,V)</li>
+	<li>npcSpawn(S,V,A)</li>
+</ul>
+ConVars:<br>
+<ul>
+	<li>sbox_E2_maxNpcsPerSecond</li>
+</ul>
