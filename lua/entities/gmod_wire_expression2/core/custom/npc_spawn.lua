@@ -59,7 +59,7 @@ function NpcSpawn(class, pos, yaw, chip)
     end
 
 	if IsValid(chip.player) then
-		gamemode.Call("PlayerSpawnedNPC", chip.player, chip.player, npc)
+		gamemode.Call("PlayerSpawnedNPC", chip.player, npc)
 	end
 	return npc, is_npc
 end
