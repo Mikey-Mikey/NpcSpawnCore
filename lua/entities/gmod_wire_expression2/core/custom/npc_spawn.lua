@@ -49,6 +49,9 @@ function NpcSpawn(class, pos, yaw, chip)
     if yaw ~= nil then npc:SetAngles(Angle(0,yaw,0)) end
 
     if npc:IsNPC() then
+        if CPPI then
+            npc:CPPISetOwner(chip.player)
+        end
         npc:Spawn()
         is_npc = true
     else
@@ -110,7 +113,11 @@ e2function entity npcSpawn(string class, vector pos, number yaw)
 end
 
 e2function void entity:npcSetYaw(number yaw)
-    if not this:IsNPC() then return self:throw("Not an NPC!", 0) end
+    if not this:IsValid() then return self:throw("Not a valid NPC!", nil) end
+    if not this:IsNPC() then return self:throw("Not an NPC!", nil) end
+    if CPPI and self.player ~= this:CPPIGetOwner() then
+        return self:throw("You don't have permissions to edit this npc.", nil)
+    end
     this:SetAngles(Angle(0,yaw,0))
 end
 
