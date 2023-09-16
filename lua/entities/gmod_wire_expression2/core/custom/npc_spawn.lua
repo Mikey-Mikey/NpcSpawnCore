@@ -1,7 +1,7 @@
 --self.entity = chip
 --self.player = chip owner
 
-CreateConVar("sbox_E2_maxNpcsPerSecond", 4, FCVAR_NONE, "", 1)
+local e2_max_npcs_per_second = CreateConVar("sbox_E2_maxNpcsPerSecond", 4, FCVAR_NONE, "", 1)
 
 E2Lib.RegisterExtension("npcspawncore", false, "E2 functions that spawn npcs.")
 
@@ -32,6 +32,10 @@ end
 
 e2function number npcCanSpawn()
 	return NpcCanSpawn(self.player) and 1 or 0
+end
+
+e2function number npcSpawnRate()
+	return 1000 / e2_max_npcs_per_second:GetFloat() -- In milliseconds
 end
 
 e2function void npcSpawnUndo(number state)
