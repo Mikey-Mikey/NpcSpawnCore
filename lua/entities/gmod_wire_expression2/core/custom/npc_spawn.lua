@@ -38,11 +38,11 @@ e2function void npcSpawnUndo(number state)
 	self.entity.npcSpawnUndo = state == 1
 end
 
-function NpcSpawn(class, pos, ang, chip)
+function NpcSpawn(class, pos, yaw, chip)
     local is_npc = false
 	local npc = ents.Create(class)
     npc:SetPos(pos)
-    if ang then npc:SetAngles(ang) end
+    if yaw ~= nil then npc:SetAngles(Angle(0,yaw,0)) end
 
     if npc:IsNPC() then
         npc:Spawn()
@@ -62,8 +62,7 @@ e2function entity npcSpawn(string class, vector pos)
         local npc, is_npc = NpcSpawn(class, pos, nil, self)
         
         if not is_npc then
-            self:throw("Not an NPC class!", 0)
-            return
+            return self:throw("Not an NPC class!", 0)
         end
         
         if self.entity.npcSpawnUndo then
@@ -82,10 +81,33 @@ e2function entity npcSpawn(string class, vector pos)
     end
 end
 
-e2function entity npcSpawn(string class, vector pos, angle ang)
+e2function entity npcSpawn(string class, vector pos, number yaw)
     if NpcCanSpawn(self.player) then
-        local npc = NpcSpawn(class, pos, ang, self.player)
+        local npc, is_npc = NpcSpawn(class, pos, yaw, self)
+        
+        if not is_npc then
+            return self:throw("Not an NPC class!", 0)
+        end
+        
+        if self.entity.npcSpawnUndo then
+            undo.Create("E2 Spawned Npc")
+            undo.AddEntity(npc)
+            undo.SetPlayer(self.player)
+            undo.Finish("E2 Spawned Npc")
+        else
+            self.entity.npcsToUndo[#self.entity.npcsToUndo + 1] = npc
+        end
+
+        self.player.npcsBursted = self.player.npcsBursted + 1
+
+        self.player.lastNpcSpawntime = CurTime()
+        return npc
     end
+end
+
+e2function void entity:npcSetYaw(number yaw)
+    if not this:IsNPC() then return self:throw("Not an NPC!", 0) end
+    this:SetAngles(Angle(0,yaw,0))
 end
 
 registerCallback("destruct", function(self)
